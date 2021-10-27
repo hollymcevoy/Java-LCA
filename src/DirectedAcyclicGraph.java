@@ -1,49 +1,50 @@
+// DirectedAcyclicGraph LCA assignment 2 for software eng due 29.10.21
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class DirectedAcyclicGraph
 {
-	private int V;						
-	private int E;						
-	private ArrayList<Integer>[] adj;   
-	private int [] indegree;			
-	private int [] outdegree;			
-	private boolean marked [];			
-	private boolean hasCycle;		
-	private boolean stack [];			
-	
-	
+	private int V;
+	private int E;
+	private ArrayList<Integer>[] adj;
+	private int [] indegree;
+	private int [] outdegree;
+	private boolean marked [];
+	private boolean hasCycle;
+	private boolean stack [];
+
+
 	public DirectedAcyclicGraph(int V)
 	{
 		if(V < 0)
 		{
 			throw new IllegalArgumentException("Number of vertices must be greater than 0");
 		}
-		
+
 		this.V = V;
 		this.E = 0;
 		indegree = new int[V];
 		marked = new boolean[V];
 		stack = new boolean[V];
 		adj = (ArrayList<Integer>[]) new ArrayList[V];
-		
+
 		for(int v = 0; v < V; v++)
 		{
 			adj[v] = new ArrayList<Integer>();
 		}
 	}
-	
+
 	public int V()
 	{
 		return V;
 	}
-	
+
 	public int E()
 	{
 		return E;
 	}
-	
+
 	public void addEdge(int v, int w)
 	{
 		if((validateVertex(v) > 0) && (validateVertex(w) > 0))
@@ -55,9 +56,9 @@ public class DirectedAcyclicGraph
 		else
 		{
 			System.out.println("Please enter numbers between 0 and " + (V-1));
-		}		
+		}
 	}
-	
+
 	private int validateVertex(int v)
 	{
 		if(v < 0 || v >= V)
@@ -69,7 +70,7 @@ public class DirectedAcyclicGraph
 			return 1;
 		}
 	}
-	
+
 	public int indegree(int v)
 	{
 		if(validateVertex(v) > 0)
@@ -80,9 +81,9 @@ public class DirectedAcyclicGraph
 		{
 			return -1;
 		}
-		
+
 	}
-	
+
 	public int outdegree(int v)
 	{
 		if(validateVertex(v) > 0)
@@ -94,22 +95,22 @@ public class DirectedAcyclicGraph
 			return -1;
 		}
 	}
-	
+
 	public Iterable<Integer> adj(int v)
 	{
 		return adj[v];
 	}
-	
+
 	public boolean hasCycle()
 	{
 		return hasCycle;
 	}
-	
+
 	public void findCycle(int v)
 	{
 		marked[v] = true;
 		stack[v] = true;
-		
+
 		for(int w : adj(v))
 		{
 			if(!marked[w])
@@ -124,12 +125,12 @@ public class DirectedAcyclicGraph
 		}
 		stack[v] = false;
 	}
-	
+
 	public int findLCA(int v, int w)
 	{
 		findCycle(0);
-		
-		if(hasCycle) 
+
+		if(hasCycle)
 		{
 			return -1;
 		}
@@ -141,15 +142,15 @@ public class DirectedAcyclicGraph
 		{
 			return -1;
 		}
-		
+
 		DirectedAcyclicGraph reverse = reverse();
-		
+
 		ArrayList<Integer> array1 = reverse.BFS(v);
 		ArrayList<Integer> array2 = reverse.BFS(w);
 		ArrayList<Integer> commonAncestors = new ArrayList<Integer>();
-		
+
 		boolean found = false;
-		
+
 		for(int i = 0; i < array1.size(); i++)
 		{
 			for(int j = 0; j < array2.size(); j++)
@@ -161,33 +162,33 @@ public class DirectedAcyclicGraph
 				}
 			}
 		}
-		
+
 		if(found)
 		{
 			return commonAncestors.get(0);
 		}
 		else
 		{
-			return -1; 
+			return -1;
 		}
 	}
-	
+
 	public ArrayList<Integer> BFS(int s)
 	{
 		ArrayList<Integer> order = new ArrayList<Integer>();
-		boolean visited[] = new boolean[V]; 
+		boolean visited[] = new boolean[V];
 		LinkedList<Integer> queue = new LinkedList<Integer>();
-		
+
 		visited[s] = true;
 		queue.add(s);
-		
+
 		while(queue.size() != 0)
 		{
-			s = queue.poll(); 
+			s = queue.poll();
 			order.add(s);
-	
+
 			Iterator<Integer> i = adj[s].listIterator();
-			
+
 			while(i.hasNext())
 			{
 				int n = i.next();
@@ -209,7 +210,7 @@ public class DirectedAcyclicGraph
 			for(int w : adj(v))
 			{
 				reverse.addEdge(w, v);
-			}		
+			}
 		}
 		return reverse;
 	}
